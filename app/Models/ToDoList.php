@@ -20,4 +20,9 @@ class ToDoList extends Model
     {
         return $this->hasMany(Item::class);
     }
+
+    public function itemsCount(): int
+    {
+        return $this->items()->get()->count();
+    }
 }

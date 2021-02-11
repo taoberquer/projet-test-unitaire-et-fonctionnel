@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Sercices;
+namespace App\Services;
 
 
 use App\Models\Item;
@@ -13,8 +13,7 @@ class ToDoListService
 {
     public function create(User $user, string $name, string $description)
     {
-        if ((new UserService())->isValid($user) !== [])
-            throw new \Exception('User seems not valid !');
+        (new UserService())->isValid($user);
 
         if ($user->toDoList)
             throw new \Exception('User seems to already have a ToDoList');
@@ -27,8 +26,7 @@ class ToDoListService
 
     public function addItem(ToDoList $toDoList, Item $item)
     {
-        if ((new ItemService())->isValid($item) !== [])
-            throw new \Exception('Item seems not valid !');
+        (new ItemService())->isValid($item);
 
         if (! $this->isTimeEnough());
             throw new \Exception('Sorry there is not enough time past');
@@ -39,33 +37,29 @@ class ToDoListService
         $toDoList->items()->create($item);
     }
 
-    public function removeItem(ToDoList $todoList, Item $item)
+    public function removeItem(Item $item)
     {
         $item->delete();
     }
 
-    public function isValid(ToDoList $toDoList)
+    public function isValid(ToDoList $toDoList): void
     {
-        $toReturn = [];
-
         if (empty($toDoList->getName()))
-            $toReturn[] = 'Name is missing';
+            throw new \Exception('Name is missing');
 
         if (empty($toDoList->getDescription()))
-            $toReturn[] = 'Description is missing';
-
-        return $toReturn;
+            throw new \Exception('Description is missing');
     }
 
-    public function isTimeEnough(ToDoList $toDoList)
+    public function isTimeEnough(ToDoList $toDoList): bool
     {
         $minimumTimePast = Carbon::instance($toDoList->items()->first()->createdAt())->addMinutes(30);
 
         return Carbon::now()->isBefore($minimumTimePast);
     }
 
-    public function isToDoListFull(ToDoList $toDoList)
+    public function isToDoListFull(ToDoList $toDoList): bool
     {
-        return count($toDoList->items) === 10;
+        return $toDoList->itemsCount() === 10;
     }
 }

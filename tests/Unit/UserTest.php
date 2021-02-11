@@ -16,7 +16,7 @@ class UserTest extends TestCase
             'firstname' => 'fdszfez',
             'uncrypted_password' => 'ezfezddzzddd',
             'email' => 'tao.berquer@gmail.com',
-            'birthday' => new Carbon('07/03/1999')
+            'birthday' => (new Carbon())->subYears(20)
         ]);
     }
 

@@ -6,7 +6,7 @@ namespace Tests\AppBundle\Service;
 use App\Models\Item;
 use App\Models\ToDoList;
 use App\Models\User;
-use App\Sercices\ItemService;
+use App\Services\ItemService;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 

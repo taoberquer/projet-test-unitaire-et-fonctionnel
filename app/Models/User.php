@@ -38,25 +38,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(ToDoList::class);
     }
-    public function isValid(): array
+
+    public function countToDoList(): int
     {
-        $toReturn = [];
-
-        if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
-            $toReturn[] = 'Incorrect email';
-
-        if (strlen($this->uncrypted_password) < 8 || strlen($this->uncrypted_password) > 40)
-            $toReturn[] = 'Incorrect password';
-
-        if (empty($this->lastname))
-            $toReturn[] = 'Lastname is missing';
-
-        if (empty($this->firstname))
-            $toReturn[] = 'Firstname is missing';
-
-        if (! $this->birthday->addYears('13')->isBefore(Carbon::now()))
-            $toReturn[] = 'Incorrect age';
-
-        return $toReturn;
+        return $this->toDoList()->get()->count();
     }
 }
