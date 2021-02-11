@@ -5,7 +5,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class TestItemController extends TestCase
+class ItemControllerTest extends TestCase
 {
     protected ToDoList $toDoList;
 
