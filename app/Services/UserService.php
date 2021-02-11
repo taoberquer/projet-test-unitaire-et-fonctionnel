@@ -11,19 +11,19 @@ class UserService
 {
     public function isValid(User $user): bool
     {
-        if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
+        if (! filter_var($user->email, FILTER_VALIDATE_EMAIL))
             throw new \Exception('Incorrect email');
 
-        if (strlen($this->uncrypted_password) < 8 || strlen($this->uncrypted_password) > 40)
+        if (strlen($user->uncrypted_password) < 8 || strlen($user->uncrypted_password) > 40)
             throw new \Exception('Incorrect password');
 
-        if (empty($this->lastname))
+        if (empty($user->lastname))
             throw new \Exception('Lastname is missing');
 
-        if (empty($this->firstname))
+        if (empty($user->firstname))
             throw new \Exception('Firstname is missing');
 
-        if (! $this->birthday->addYears('13')->isBefore(Carbon::now()))
+        if (! (new Carbon($user->birthday))->addYears('13')->isBefore(Carbon::now()))
             throw new \Exception('Incorrect age');
 
         return true;

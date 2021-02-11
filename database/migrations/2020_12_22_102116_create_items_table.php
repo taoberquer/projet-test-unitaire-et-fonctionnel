@@ -17,6 +17,7 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('content');
+            $table->unsignedBigInteger('to_do_list_id');
             $table->timestamps();
         });
     }

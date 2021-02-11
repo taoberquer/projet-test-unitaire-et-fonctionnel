@@ -20,9 +20,9 @@ $router->get('/', function () use ($router) {
 $router->get('/user', 'UserController@index');
 $router->post('/user', 'UserController@create');
 $router->get('/user/{userID}', 'UserController@show');
-$router->delete('/user{userID}', 'UserController@delete');
+$router->delete('/user/{userID}', 'UserController@delete');
 
-$router->post('/user{userID}/todolist', 'ToDoListController@create');
+$router->post('/user/{userID}/todolist', 'ToDoListController@create');
 
 $router->post('/todolist/{toDoListID}/item/', 'ItemController@addItem');
 $router->post('/item/{itemID}', 'ItemController@removeItem');

@@ -21,7 +21,7 @@ class UserController extends Controller
         $this->validate($request, [
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'password' => 'required|string|min:9|max:39',
+            'uncrypted_password' => 'required|string|min:9|max:39',
             'email' => 'required|email',
             'birthday' => 'required|date'
         ]);
@@ -29,14 +29,14 @@ class UserController extends Controller
         $user = new User([
             'firstname' => $request->get('firstname'),
             'lastname' => $request->get('lastname'),
-            'password' => $request->get('password'),
+            'uncrypted_password' => $request->get('uncrypted_password'),
             'email' => $request->get('email'),
             'birthday' => $request->get('birthday'),
         ]);
 
         $errors = (new UserService())->isValid($user);
 
-        if ($errors !== [])
+        if (! $errors)
             return response()->json(['errors' => $errors], 400);
 
         $user->save();

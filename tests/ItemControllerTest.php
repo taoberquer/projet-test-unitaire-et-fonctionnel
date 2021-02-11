@@ -17,7 +17,7 @@ class ItemControllerTest extends TestCase
         $user = User::create([
             'firstname' => 'Tao',
             'lastname' => 'BERQUER',
-            'password' => Str::random(),
+            'uncrypted_password' => Str::random(),
             'email' => 'tao.berquer@gmail.com',
             'birthday' => Carbon::now()->subYears(20)
         ]);
@@ -32,7 +32,7 @@ class ItemControllerTest extends TestCase
     {
         $response = $this->call('POST', '/todolist/' . $this->toDoList->id . '/item/', [
             'name' => Str::random(),
-            'description' => Str::random(100)
+            'content' => Str::random(100)
         ]);
 
         $this->assertEquals(201, $response->getStatusCode());
@@ -41,25 +41,25 @@ class ItemControllerTest extends TestCase
     public function testToDoListCreationParamsMissing()
     {
         $response = $this->call('POST', '/todolist/' . $this->toDoList->id . '/item/', [
-            'description' => Str::random(100)
+            'content' => Str::random(100)
         ]);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
 
         $response = $this->call('POST', '/todolist/' . $this->toDoList->id . '/item/', [
             'name' => Str::random(),
         ]);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
     }
 
     public function testToDoListItemCreationWithWrongLenghtDescription()
     {
         $response = $this->call('POST', '/todolist/' . $this->toDoList->id . '/item/', [
             'name' => Str::random(),
-            'description' => Str::random(1005)
+            'content' => Str::random(1005)
         ]);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
     }
 }

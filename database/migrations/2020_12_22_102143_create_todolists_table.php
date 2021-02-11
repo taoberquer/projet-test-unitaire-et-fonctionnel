@@ -13,10 +13,11 @@ class CreateTodolistsTable extends Migration
      */
     public function up()
     {
-        Schema::create('todolists', function (Blueprint $table) {
+        Schema::create('to_do_lists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ use App\Models\ToDoList;
 use App\Models\User;
 use App\Services\ToDoListService;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class ToDoListServiceTest extends TestCase
 {
@@ -27,11 +28,11 @@ class ToDoListServiceTest extends TestCase
         ]);
 
         $this->toDoList = $this->user->toDoList()->create([
-            'name' => 'La todoux',
+            'name' => Str::random(),
             'description' => 'los descriptor'
         ]);
 
-        $this->item = $this->toDoList()->items()->create([
+        $this->item = $this->toDoList->items()->create([
             'name' => 'Le premier item',
             'content' => 'Ceci est du contenu'
         ]);
@@ -64,16 +65,19 @@ class ToDoListServiceTest extends TestCase
     public function testAddItemWithoutError()
     {
         $fakeItem = new Item([
-            'name' => 'dd',
-            'content' => 'ezfze'
+            'name' => Str::random(),
+            'content' => Str::random()
         ]);
-        (new ToDoListService())->addItem($this->toDoList, $fakeItem);
+        $toDolistService = new ToDoListService();
+        $toDolistService->addItem($this->toDoList, $fakeItem);
 
-        $this->assertContains($fakeItem, $this->toDoList->items);
+        $this->assertContains(
+            Item::where('name', $fakeItem->name)->first()->toArray(),
+            $this->toDoList->items->toArray()
+        );
     }
 
     public function testIsToDoListValid() {
         $this->assertEmpty((new ToDoListService())->isValid($this->toDoList));
     }
-
 }

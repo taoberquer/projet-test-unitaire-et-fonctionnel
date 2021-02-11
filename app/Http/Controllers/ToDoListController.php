@@ -23,7 +23,7 @@ class ToDoListController extends Controller
         $user = User::find($userID);
 
         if ($user === null)
-            return response()->json(['error' => 'Cannot find user', 404]);
+            return response()->json(['error' => 'Cannot find user'], 404);
 
         try {
             (new ToDoListService())->create($user, $request->get('name'), $request->get('description'));
@@ -31,7 +31,7 @@ class ToDoListController extends Controller
             return response()->json([], 201);
         } catch (\Exception $exception)
         {
-            response()->json(['error' => $exception->getMessage()], 400);
+            return response()->json(['error' => $exception->getMessage()], 400);
         }
     }
 }

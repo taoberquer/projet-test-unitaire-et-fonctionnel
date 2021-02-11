@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Models\Item;
 use App\Models\ToDoList;
 use App\Models\User;
+use Carbon\Carbon;
 use Tests\AppBundle\Service\ItemServiceTest;
 
 class ToDoListService
@@ -15,7 +16,7 @@ class ToDoListService
     {
         (new UserService())->isValid($user);
 
-        if ($user->toDoList)
+        if ($user->toDoList->count())
             throw new \Exception('User seems to already have a ToDoList');
 
         return $user->toDoList()->create([
@@ -28,13 +29,16 @@ class ToDoListService
     {
         (new ItemService())->isValid($item);
 
-        if (! $this->isTimeEnough());
+        if (! $this->isTimeEnough($toDoList))
             throw new \Exception('Sorry there is not enough time past');
 
-        if (! $this->isToDoListFull())
+        if ($this->isToDoListFull($toDoList))
             throw new \Exception('Sorry no more space in you TODO List');
 
-        $toDoList->items()->create($item);
+        $toDoList->items()->create([
+            'name' => $item->name,
+            'content' => $item->content
+        ]);
     }
 
     public function removeItem(Item $item)
@@ -44,16 +48,18 @@ class ToDoListService
 
     public function isValid(ToDoList $toDoList): void
     {
-        if (empty($toDoList->getName()))
+        if (empty($toDoList->name))
             throw new \Exception('Name is missing');
 
-        if (empty($toDoList->getDescription()))
+        if (empty($toDoList->description))
             throw new \Exception('Description is missing');
     }
 
     public function isTimeEnough(ToDoList $toDoList): bool
     {
-        $minimumTimePast = Carbon::instance($toDoList->items()->first()->createdAt())->addMinutes(30);
+        $time = $toDoList->items()->first();
+        if ($time === null) return true;
+        $minimumTimePast = Carbon::instance($time->created_at)->addMinutes(30);
 
         return Carbon::now()->isBefore($minimumTimePast);
     }

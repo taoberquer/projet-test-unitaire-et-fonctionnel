@@ -4,14 +4,14 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class UserControllerTest extends TestCase
+    class UserControllerTest extends TestCase
 {
     public function testUserCreation()
     {
         $response = $this->call('POST', '/user', [
             'firstname' => 'Tao',
             'lastname' => 'BERQUER',
-            'password' => Str::random(),
+            'uncrypted_password' => Str::random(),
             'email' => 'tao.berquer@gmail.com',
             'birthday' => Carbon::now()->subYears(20)
         ]);
@@ -24,12 +24,12 @@ class UserControllerTest extends TestCase
         $response = $this->call('POST', '/user', [
             'firstname' => 'Tao',
             'lastname' => 'BERQUER',
-            'password' => Str::random(),
+            'uncrypted_password' => Str::random(),
             'email' => Str::random(),
             'birthday' => Carbon::now()->subYears(20)
         ]);
 
-        $this->assertEquals(404, $response->status());
+        $this->assertEquals(422, $response->status());
     }
 
     public function testUserFound()
@@ -37,7 +37,7 @@ class UserControllerTest extends TestCase
         $user = User::create([
             'firstname' => 'Tao',
             'lastname' => 'BERQUER',
-            'password' => Str::random(),
+            'uncrypted_password' => Str::random(),
             'email' => 'tao.berquer@gmail.com',
             'birthday' => Carbon::now()->subYears(20)
         ]);
@@ -49,7 +49,7 @@ class UserControllerTest extends TestCase
 
     public function testUserNotFound()
     {
-        $response = $this->call('GET', '/user/45');
+        $response = $this->call('GET', '/user/88445');
 
         $this->assertEquals(404, $response->status());
     }

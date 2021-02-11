@@ -15,7 +15,7 @@ class ToDoListControllerTest extends TestCase
         $this->user = User::create([
             'firstname' => 'Tao',
             'lastname' => 'BERQUER',
-            'password' => Str::random(),
+            'uncrypted_password' => Str::random(),
             'email' => 'tao.berquer@gmail.com',
             'birthday' => Carbon::now()->subYears(20)
         ]);
@@ -33,7 +33,7 @@ class ToDoListControllerTest extends TestCase
 
     public function testToDoListCreationUserNotFound()
     {
-        $response = $this->call('POST', '/user/45/todolist/', [
+        $response = $this->call('POST', '/user/8000/todolist/', [
             'name' => Str::random(),
             'description' => Str::random(100)
         ]);
@@ -47,12 +47,12 @@ class ToDoListControllerTest extends TestCase
             'description' => Str::random(100)
         ]);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
 
         $response = $this->call('POST', '/user/' . $this->user->id . '/todolist/', [
             'name' => Str::random(),
         ]);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(422, $response->getStatusCode());
     }
 }

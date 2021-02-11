@@ -5,6 +5,7 @@ use App\Models\ToDoList;
 use App\Models\User;
 use App\Services\ItemService;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * Class ItemServiceTest
@@ -47,7 +48,7 @@ class ItemServiceTest extends TestCase
             'description' => 'los descriptor'
         ]);
 
-        $this->item = $this->toDoList()->items()->create([
+        $this->item = $this->toDoList->items()->create([
             'name' => 'Le premier item',
             'content' => 'Ceci est du contenu'
         ]);
@@ -60,7 +61,7 @@ class ItemServiceTest extends TestCase
     public function testIfItemNotExist()
     {
         $fakeItem = new Item([
-            'name' => 'Le deuxieme item',
+            'name' => Str::random(),
             'content' => 'Ceci est du contenu'
         ]);
 
@@ -73,19 +74,19 @@ class ItemServiceTest extends TestCase
     public function testIfItemExist()
     {
         $fakeItem = $this->toDoList->items()->create([
-            'name' => 'Le deuxieme item',
+            'name' => 'Le premier item',
             'content' => 'Ceci est du contenu'
         ]);
 
-        $this->assetFalse((new ItemService())->isNameUnique($fakeItem));
+        $this->assertFalse((new ItemService())->isNameUnique($fakeItem));
     }
 
     /**
      *
      */
     public function testIsItemValid() {
-        $fakeItem = $this->toDoList->items()->create([
-            'name' => 'Le deuxieme item',
+        $fakeItem = new Item([
+            'name' => Str::random(),
             'content' => 'Ceci est du contenu'
         ]);
 
@@ -100,7 +101,9 @@ class ItemServiceTest extends TestCase
             'content' => 'Ceci est du contenu'
         ]);
 
-        $this->assertNotEmpty((new ItemService())->isValid($fakeItem));
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Name is missing');
+        (new ItemService())->isValid($fakeItem);
     }
 
     /**
@@ -108,16 +111,12 @@ class ItemServiceTest extends TestCase
      */
     public function testContentItemEmpty() {
         $fakeItem = new Item([
-            'name' => 'Le deuxieme item',
+            'name' => Str::random(),
         ]);
 
-        $this->assertNotEmpty((new ItemService())->isValid($fakeItem));
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Content is missing');
+        (new ItemService())->isValid($fakeItem);
     }
 
-    /**
-     *
-     */
-    public function testItemAlreadyExist() {
-        $this->assertNotEmpty((new ItemService())->isValid($this->item));
-    }
 }
