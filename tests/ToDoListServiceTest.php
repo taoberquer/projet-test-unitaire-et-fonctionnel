@@ -62,6 +62,16 @@ class ToDoListServiceTest extends TestCase
         (new ToDoListService())->create($this->user, "La todoux", "los descriptor");
     }
 
+    public function testToDoListFull()
+    {
+        $mock = $this->createPartialMock(ToDoListService::class, ['isToDoListFull']);
+        $mock->expects($this->once())->method('isToDoListFull')->willReturn(true);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Sorry no more space in you TODO List');
+        $mock->addItem($this->toDoList, new Item(['name' => Str::random(), 'content' => Str::random()]));
+    }
+
     public function testAddItemWithoutError()
     {
         $fakeItem = new Item([
