@@ -1,15 +1,11 @@
 <?php
 
-
-namespace Feature;
-
-
 use App\Models\ToDoList;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class ItemControllerTest extends \TestCase
+class TestItemController extends TestCase
 {
     protected ToDoList $toDoList;
 

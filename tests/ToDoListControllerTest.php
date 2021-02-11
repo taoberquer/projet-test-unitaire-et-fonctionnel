@@ -1,14 +1,10 @@
 <?php
 
-
-namespace Feature;
-
-
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class ToDoListControllerTest extends \TestCase
+class ToDoListControllerTest extends TestCase
 {
     protected User $user;
 

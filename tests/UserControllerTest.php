@@ -1,14 +1,10 @@
 <?php
 
-
-namespace Feature;
-
-
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
-class UserControllerTest extends \TestCase
+class UserControllerTest extends TestCase
 {
     public function testUserCreation()
     {

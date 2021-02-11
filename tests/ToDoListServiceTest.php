@@ -1,13 +1,10 @@
 <?php
 
-namespace Tests\AppBundle\Service;
-
 use App\Models\Item;
 use App\Models\ToDoList;
 use App\Models\User;
 use App\Services\ToDoListService;
 use Carbon\Carbon;
-use PHPUnit\Framework\TestCase;
 
 class ToDoListServiceTest extends TestCase
 {
@@ -26,7 +23,7 @@ class ToDoListServiceTest extends TestCase
             'lastname' => 'BRAT',
             'email' => 'rbrat@gmail.com',
             'uncrypted_password' => 'lesupermotdepasse',
-            'birthday' => Carbon::now(),
+            'birthday' => Carbon::now()->subYears(20),
         ]);
 
         $this->toDoList = $this->user->toDoList()->create([
@@ -51,13 +48,16 @@ class ToDoListServiceTest extends TestCase
 
     public function testCreateToDoListUserNotValid()
     {
+        $this->user->birthday = Carbon::now();
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Incorrect age');
         (new ToDoListService())->create($this->user, "Ma première ToDoList", "Une superbe ToDoList");
     }
 
     public function testToDoListAlreadyExist()
     {
         $this->expectException(Exception::class);
+        $this->expectExceptionMessage('User seems to already have a ToDoList');
         (new ToDoListService())->create($this->user, "La todoux", "los descriptor");
     }
 
@@ -69,18 +69,11 @@ class ToDoListServiceTest extends TestCase
         ]);
         (new ToDoListService())->addItem($this->toDoList, $fakeItem);
 
-        $this->assertContains($fakeItem, $this->toDoList->items());
+        $this->assertContains($fakeItem, $this->toDoList->items);
     }
 
     public function testIsToDoListValid() {
         $this->assertEmpty((new ToDoListService())->isValid($this->toDoList));
     }
 
-    public function testRemoveElements() {
-        $this->toDoList->items()->delete();
-
-        if ($this->toDoList->items())
-
-        $this->assertEmpty($this->toDoList->items);
-    }
 }

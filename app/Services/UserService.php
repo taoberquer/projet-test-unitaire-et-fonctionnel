@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class UserService
 {
-    public function isValid(User $user): void
+    public function isValid(User $user): bool
     {
         if (! filter_var($this->email, FILTER_VALIDATE_EMAIL))
             throw new \Exception('Incorrect email');
@@ -25,5 +25,7 @@ class UserService
 
         if (! $this->birthday->addYears('13')->isBefore(Carbon::now()))
             throw new \Exception('Incorrect age');
+
+        return true;
     }
 }
